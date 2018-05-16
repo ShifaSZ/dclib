@@ -192,20 +192,44 @@ Meteor.methods({
     return null
   },
 
+  loginAdmin(password) {
+    var user = userTable.findOne({borrowerId:"0"});
+    if (user === undefined)
+      return (T("userNotExist"));//"User doesn't exist")
+    if (user.name !== "admin")
+      return (T("Bad database configuration"));//"User doesn't exist")
+    pwd_hash = user.password;
+    if (pwd_hash === undefined)
+      return (T("createPassword"));//"Create a password for the user before login")
+    if (!bcrypt.compareSync(password, pwd_hash))
+      return (T("passwordWrong"));//"Password incorrect.")
+    this.setUserId("0")
+    return null
+  },
+
   logout() {
     this.setUserId(null)
     return null
   },
 
+  checkAdminLogin() {
+    if (this.userId === "0")
+      return true
+    return false
+  },
+
   restoreTable(data_json,tableName) {
+    if (this.userId !== "0")
+      return(T("Login admin before restore"))
     const tab = allTables[tableName]
     if (tab === undefined)
-      return("Table unknown")
+      return(T("Table unknown"))
     data_json.map((entry)=>{
       const rec = tab.findOne(entry);
       if (rec === undefined)
         tab.insert(entry)
     })
+    return null
   },
 
   getUserRecByUserId(userId) {

@@ -27,7 +27,7 @@ function MainMenu(props) {
     </button>
     <div className="collapse navbar-collapse" id="navbarNav">
       <ul className="navbar-nav mr-auto">
-        <li className="nav-item" onClick = {props.handleClickSelfBorrow}>
+        <li className="nav-item active" onClick = {props.handleClickSelfBorrow}>
           <a className="navbar-brand" href="#">
            {T("selfBorrow")}
            <span className="sr-only">(current)</span>
@@ -46,9 +46,9 @@ function MainMenu(props) {
           </a>
         </li>
         <li className="nav-item dropdown">
-          <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button type="button" className="btn btn-Info navbar-brand dropdown-toggle" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
            {T("manager")}
-          </a>
+          </button>
           <div className="dropdown-menu" aria-labelledby="navbarDropdown">
             <a className="dropdown-item" href="#"
               onClick = {props.handleClickLogin}>
@@ -133,7 +133,7 @@ class Login extends React.Component {
   handleSubmit(event) {
     event.preventDefault()
     if (!this.props.loginState)
-      Meteor.call("login",this.props.userId,this.props.userName,
+      Meteor.call("loginAdmin",
         this.state.password, (err,result)=>{
         if (err)
           alert(T("loginError")) //"Login error.")
@@ -159,17 +159,6 @@ class Login extends React.Component {
     var LoginForm = 
       <div>
        <div className="form-group">
-        <label htmlFor="enterBorId">{T("userId")}</label>
-        <input type="text" 
-          className="form-control" id="enterBorId"
-          aria-describedby="borIdHelp" placeholder={T("enterUserId")}
-          onChange={this.props.handleUserIdChange}
-          value={this.props.userId} />
-        <small id="borIdHelp" className="form-text text-muted">
-           {T("userName")}: {this.props.userName}
-        </small>
-       </div>
-       <div className="form-group">
         <label htmlFor="inputPassword">{T("password")}</label>
         <input type="password" className="form-control"
           id="inputPassword" placeholder={T("enterPassword")}
@@ -180,6 +169,18 @@ class Login extends React.Component {
         <button type="submit" className="btn btn-primary">{T("login")}</button>
       </div>
 /*
+       <div className="form-group">
+        <label htmlFor="enterBorId">{T("userId")}</label>
+        <input type="text" 
+          className="form-control" id="enterBorId"
+          aria-describedby="borIdHelp" placeholder={T("enterUserId")}
+          onChange={this.props.handleUserIdChange}
+          value={this.props.userId} />
+        <small id="borIdHelp" className="form-text text-muted">
+           {T("userName")}: {this.props.userName}
+        </small>
+       </div>
+
          <input type="text" onChange={this.props.handleUserNameChange}
            value={this.props.userName} />
            <LoginForm handleUserIdChange={this.props.handleBorrowerIdChange}
@@ -289,7 +290,7 @@ class SelfBorrow extends React.Component {
         return
       }
       if (result === null) {
-        this.setState({bookId:bookId})
+        this.setState({bookId:bookId,bookRec:null})
         return
       }
       this.setState({bookId:bookId,bookRec:result})
@@ -619,7 +620,7 @@ export class Other extends React.Component {
           </select>
         </div>
         <ReactJson src = {this.state.json} 
-         collapsed = {true} collapseStringsAfterLength={40} />
+         collapsed = {false} collapseStringsAfterLength={40} />
       </form>
     )
   }
@@ -637,26 +638,34 @@ export class DbRestore extends React.Component {
       alert("No DB files to restore")
       return
     }
-    let file=[], tableName=[], reader=[];
-    for (let i=0;i<this.props.dbFiles.length;i++) {
-      file[i] = this.props.dbFiles[i]
-      tableName[i]=file[i].name.replace(".json", "")
-      reader[i] = new FileReader();
-
-      reader[i].onload = (event) => {
-        let data_str = reader[i].result;
-        console.log(data_str);
-        let data_json = EJSON.parse(data_str);
-        console.log(data_json);
-        Meteor.call("restoreTable",data_json, tableName[i], (err,result)=>{
-          if (err) {
-            alert("Restore table ",tableName[i], "error")
-            return
-          }
-        })
+    Meteor.call("checkAdminLogin", (err,result)=>{
+      if (!result) {
+        alert(T("Login admin before restore"))
+        return
       }
-      reader[i].readAsText(file[i], 'UTF-8');
-    }
+      let file=[], tableName=[], reader=[];
+      for (let i=0;i<this.props.dbFiles.length;i++) {
+        file[i] = this.props.dbFiles[i]
+        tableName[i]=file[i].name.replace(".json", "")
+        reader[i] = new FileReader();
+
+        reader[i].onload = (event) => {
+          let data_str = reader[i].result;
+          console.log(data_str);
+          let data_json = EJSON.parse(data_str);
+          console.log(data_json);
+          Meteor.call("restoreTable",data_json, tableName[i], (err,result)=>{
+            if (err) {
+              alert(T("Restore table")+tableName[i]+T("error"))
+              return
+            }
+            if (result !== null)
+              alert(result)
+          })
+        }
+        reader[i].readAsText(file[i], 'UTF-8');
+      }
+    })
     event.preventDefault()
   }
 
@@ -696,9 +705,9 @@ export class DcLibApp extends React.Component {
     super(props);
     this.state = {
       data:"test",
-      currentPage:"borrowBook",
-      userId:"",
-      userName:"",
+      currentPage:"selfBorrow",
+      userId:0,
+      userName:"admin",
       loginState:false,
       dbFiles:null,
     }
@@ -714,6 +723,18 @@ export class DcLibApp extends React.Component {
 
     this.handleDbRestore = this.handleDbRestore.bind(this);
     this.handleDbFilesChange = this.handleDbFilesChange.bind(this);
+  }
+
+  componentDidMount(){
+/*
+    Meteor.call("getUserName", this.state.userId, (err,result)=>{
+      if (err) {
+        console.log(err)
+        return;
+      }
+      this.setState({userName:result})
+    })
+*/
   }
 
   handleClickLogin(event) {
@@ -772,9 +793,14 @@ export class DcLibApp extends React.Component {
   }
 
   handleDbRestore(event) {
-    this.setState({
-      currentPage:'dbRestore'})
-    
+    Meteor.call("checkAdminLogin", (err,result)=>{
+      if (!result) {
+        alert(T("Login admin first"))
+        this.setState({currentPage:'login'})
+        return
+      }
+      this.setState({currentPage:'dbRestore'})
+    })
   }
 
   handleDbFilesChange(event) {
