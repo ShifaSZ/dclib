@@ -1,105 +1,16 @@
 import React from 'react';
+import { EJSON } from 'meteor/ejson';
+import { T } from '/imports/startup/both/promptmsg.js'
+import ReactJson from 'react-json-view'
  
-// App component - represents the whole app
-/*
-*/
-msg={
-login:"登录",
-selfBorrow:"自助借阅",
-borrowBook:"图书借阅",
-returnBook:"图书归还",
-manager:"管理员",
-other:"其它",
-
-enterBookNo:"输入索书号",
-restart:"重新开始",
-confirmReturn:"确认还书",
-enterReaderNo:"输入用户号",
-confirmBorrow:"确认借书",
-
-enterBorrowerId:"输入读者索号",
-enterPassword:"输入密码",
-userId:"读者索号",
-userName:"读者姓名",
-
-timeoutBorrow:"超时查询",
-borrowHistory:"借阅历史",
-bookManage:"图书管理",
-readerManage:"读者管理",
-classManage:"班级管理",
-roleManage:"身份管理",
-};
-
-function MainMenu1(props) {
-  return (
-<nav className="navbar navbar-expand-lg navbar-light bg-light">
-  <a className="navbar-brand" href="#">Navbar</a>
-  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span className="navbar-toggler-icon"></span>
-  </button>
-
-  <div className="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul className="navbar-nav mr-auto">
-      <li className="nav-item active">
-        <a className="nav-link" href="#">Home 
-         <span className="sr-only">(current)</span></a>
-      </li>
-      <li className="nav-item">
-        <a className="nav-link" href="#">Link</a>
-      </li>
-      <li className="nav-item dropdown">
-        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown
-        </a>
-        <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a className="dropdown-item" href="#">Action</a>
-          <a className="dropdown-item" href="#">Another action</a>
-          <div className="dropdown-divider"></div>
-          <a className="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-      <li className="nav-item">
-        <a className="nav-link disabled" href="#">Disabled</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-)}
-
-/*
-  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span className="navbar-toggler-icon"></span>
-  </button>
-*/
-function MainMenu0(props) {
-  return (
-<nav className="navbar navbar-expand-sm navbar-light sm-light">
-  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span className="navbar-toggler-icon"></span>
-  </button>
-  <div className="collapse navbar-collapse" id="navbarNav">
-    <ul className="navbar-nav">
-      <li className="nav-item active">
-        <a className="nav-link" href="#">Home
-          <span className="sr-only">(current)</span>
-        </a>
-      </li>
-      <li className="nav-item">
-        <a className="nav-link" href="#">Features</a>
-      </li>
-      <li className="nav-item">
-        <a className="nav-link" href="#">Pricing</a>
-      </li>
-      <li className="nav-item">
-        <a className="nav-link disabled" href="#">Disabled</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-)}
-
 /*
     style={{"background-color": "#e3f2fd"}}>
+        <li className="nav-item active" onClick = {props.handleClickLogin}>
+          <a className="navbar-brand" href="#">
+           {T("login")}
+           <span className="sr-only">(current)</span>
+          </a>
+        </li>
 */
 function MainMenu(props) {
   return (
@@ -116,39 +27,65 @@ function MainMenu(props) {
     </button>
     <div className="collapse navbar-collapse" id="navbarNav">
       <ul className="navbar-nav mr-auto">
-        <li className="nav-item active" onClick = {props.handleClickLogin}>
-          <a className="navbar-brand" href="#">
-           {msg.login}
-           <span className="sr-only">(current)</span>
-          </a>
-        </li>
         <li className="nav-item" onClick = {props.handleClickSelfBorrow}>
           <a className="navbar-brand" href="#">
-           {msg.selfBorrow}
+           {T("selfBorrow")}
            <span className="sr-only">(current)</span>
           </a>
         </li>
         <li className="nav-item" onClick = {props.handleClickBorrowBook}>
           <a className="navbar-brand" href="#">
-           {msg.borrowBook}
+           {T("borrowBook")}
            <span className="sr-only">(current)</span>
           </a>
         </li>
         <li className="nav-item" onClick = {props.handleClickReturnBook}>
           <a className="navbar-brand" href="#">
-           {msg.returnBook}
+           {T("returnBook")}
            <span className="sr-only">(current)</span>
           </a>
         </li>
-        <li className="nav-item" onClick = {props.handleClickManager}>
-          <a className="navbar-brand" href="#">
-           {msg.manager}
-           <span className="sr-only">(current)</span>
+        <li className="nav-item dropdown">
+          <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+           {T("manager")}
           </a>
+          <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a className="dropdown-item" href="#"
+              onClick = {props.handleClickLogin}>
+              {!props.loginState && T("login")}
+              {props.loginState && T("logout")}
+            </a>
+            <div className="dropdown-divider"></div>
+            <a className="dropdown-item" href="#">
+              {T("timeoutBorrow")}
+            </a>
+            <a className="dropdown-item" href="#">
+              {T("borrowHistory")}
+            </a>
+            <a className="dropdown-item" href="#">
+              {T("bookManage")}
+            </a>
+            <a className="dropdown-item" href="#">
+              {T("readerManage")}
+            </a>
+            <a className="dropdown-item" href="#">
+              {T("classManage")}
+            </a>
+            <a className="dropdown-item" href="#">
+              {T("roleManage")}
+            </a>
+            <div className="dropdown-divider"></div>
+            <a className="dropdown-item" href="#">
+              {T("databaseBackup")}
+            </a>
+            <a className="dropdown-item" href="#" onClick = {props.handleDbRestore}>
+              {T("databaseRestore")}
+            </a>
+          </div>
         </li>
         <li className="nav-item" onClick = {props.handleClickOther}>
           <a className="navbar-brand" href="#">
-           {msg.other}
+           {T("other")}
            <span className="sr-only">(current)</span>
           </a>
         </li>
@@ -158,78 +95,397 @@ function MainMenu(props) {
   )
 }
 
+/*
+        <li className="nav-item" onClick = {props.handleClickManager}>
+          <a className="navbar-brand" href="#">
+           {T("manager")}
+           <span className="sr-only">(current)</span>
+          </a>
+        </li>
+function ManagerMenu() {
+  return(
+    <ul>
+      <li>{T("timeoutBorrow")}</li>
+      <li>{T("borrowHistory")}</li>
+      <li>{T("bookManage")}</li>
+      <li>{T("readerManage")}</li>
+      <li>{T("classManage")}</li>
+      <li>{T("roleManage")}</li>
+    </ul>
+  )
+}
+*/
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data:"test",
+      password:"",
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handlePswdChange = this.handlePswdChange.bind(this);
+  }
+
+  handlePswdChange(event) {
+    this.setState({password:event.target.value})
   }
 
   handleSubmit(event) {
     event.preventDefault()
+    if (!this.props.loginState)
+      Meteor.call("login",this.props.userId,this.props.userName,
+        this.state.password, (err,result)=>{
+        if (err)
+          alert(T("loginError")) //"Login error.")
+        else if (result !== null)
+          alert(result)
+        else {
+          this.props.handleLogin(true)
+        }
+      })
+    else
+      Meteor.call("logout",(err,result)=>{
+        if (err)
+          console.log("Logout error.")
+        else if (result !== null)
+          console.log(result)
+        else {
+          this.props.handleLogin(false)
+        }
+      })
   }
 
   render() {
-    LoginForm = (props)=>{
-      return (
+    var LoginForm = 
       <div>
-        <label>{msg.enterBorrowerId}</label>
-        <input type="text" onChange={this.props.handleBorrowerIdChange} />
-        { this.props.userName !== "" && 
-           <label>{msg.userName}: {this.props.userName} </label>
-        }
-        <br />
-        <label>{msg.enterPassword}</label>
-        <input type="text" />
-        <br />
-        <input type="submit" value="Login" />
+       <div className="form-group">
+        <label htmlFor="enterBorId">{T("userId")}</label>
+        <input type="text" 
+          className="form-control" id="enterBorId"
+          aria-describedby="borIdHelp" placeholder={T("enterUserId")}
+          onChange={this.props.handleUserIdChange}
+          value={this.props.userId} />
+        <small id="borIdHelp" className="form-text text-muted">
+           {T("userName")}: {this.props.userName}
+        </small>
+       </div>
+       <div className="form-group">
+        <label htmlFor="inputPassword">{T("password")}</label>
+        <input type="password" className="form-control"
+          id="inputPassword" placeholder={T("enterPassword")}
+          onChange={this.handlePswdChange}
+          value={this.state.password} 
+        />
+       </div>
+        <button type="submit" className="btn btn-primary">{T("login")}</button>
       </div>
-      )
-    }
 /*
          <input type="text" onChange={this.props.handleUserNameChange}
            value={this.props.userName} />
-*/
-    return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-         {!this.props.loginState && 
-           <LoginForm handleBorrowerIdChange={this.props.handleBorrowerIdChange}
+           <LoginForm handleUserIdChange={this.props.handleBorrowerIdChange}
+             userId={this.props.borrowerId}
              userName={this.props.userName}/>
+*/
+    var LogoutForm = 
+       <div className="form-group">
+           <p>{T("userName")}: {this.props.userName}</p>
+           <button type="submit" className="btn btn-primary">{T("logout")}</button>
+       </div>
+    return (
+      <form onSubmit={this.handleSubmit}>
+         {!this.props.loginState && 
+           LoginForm
          }
-         {this.props.loginState && <input type="submit" value="Logout" /> }
-        </form>
-      </div>
+         {this.props.loginState && 
+           LogoutForm
+         }
+      </form>
     )
   }
 }
 
-function SelfBorrow () {
-  return (
-    <div>
-       <p>To be developed</p>
-    </div>
-  )
+class SelfBorrow extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userId:"",
+      userRec:null,
+      bookId:"",
+      bookRec:null,
+    }
+
+    this.handleBookIdChange = this.handleBookIdChange.bind(this)
+    this.handleUserIdChange = this.handleUserIdChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(event){
+    event.preventDefault()
+    const book = this.state.bookRec
+    if ( book === null ) {
+      alert(T("bookIdInvalid"))
+      return
+    }
+    if (book.borrowed)
+      Meteor.call("returnBook",this.state.bookId,
+      (err,result)=>{
+      if (err)
+        alert(T("returnFail"))
+      else if (result !== null)
+        alert(result)
+      else {
+        alert(T("returnSuccess"))
+        this.setState({
+          bookId:"",
+          bookRec:null,
+          userId:"",
+          userRec:null
+        })
+      }
+      })
+    else {
+      const user=this.state.userRec
+      if (user === null) {
+        alert(T("enterUserId"))
+        return
+      }
+      if (user.borrowNoAllowed === 0) {
+        alert(T("userName")+":"+user.name+" "+T("borrowRestriction")+":0")
+        return
+      }
+      Meteor.call("borrowBook",this.state.userId,this.state.bookId,
+      (err,result)=>{
+      if (err)
+        alert(T("borrowFail"))
+      else if (result !== null)
+        alert(T(result))
+      else {
+        alert(T("borrowSuccess"))
+        this.setState({
+          userId:"",
+          userRec:null,
+          bookId:"",
+          bookRec:null,
+        })
+      }
+      })
+    }
+  }
+
+  handleUserIdChange(event) {
+    const userId = event.target.value;
+    Meteor.call("getUserRecByUserId",userId, (err, result) => {
+      if (err)
+        return
+      this.setState({userId:userId,userRec:result})
+    })
+  }
+
+  handleBookIdChange(event) {
+    const bookId = event.target.value;
+    Meteor.call("getBookRecByBookId",bookId, (err,result) => {
+      if (err) {
+        console.log(err)
+        return
+      }
+      if (result === null) {
+        this.setState({bookId:bookId})
+        return
+      }
+      this.setState({bookId:bookId,bookRec:result})
+    })
+  }
+
+  render () {
+    var userForm =""
+    var confirmBtn="confirmReturn"
+    if (this.state.bookRec !== null) 
+      if (!this.state.bookRec.borrowed) {
+       confirmBtn = "confirmBorrow"
+       userForm = 
+       <div className="form-group">
+        <label htmlFor="enterUserId" className="h5">{T("userId")}</label>
+        <input type="text" 
+          className="form-control" id="enterUserId"
+          aria-describedby="userIdHelp" placeholder={T("enterUserId")}
+          onChange={this.handleUserIdChange}
+          value={this.state.userId} />
+        <small id="userIdHelp" className="form-text text-muted">
+           {T("enterUserIdHelp")}
+        </small>
+        <UserInfo userRec={this.state.userRec} />
+       </div>
+      }
+    return (
+      <form onSubmit={this.handleSubmit}>
+       <div className="form-group">
+        <label htmlFor="enterBookId2" className="h5">{T("bookId")}</label>
+        <input type="text" 
+          className="form-control" id="enterBookId2"
+          aria-describedby="bookIdHelp2" placeholder={T("enterBookId")}
+          onChange={this.handleBookIdChange}
+          value={this.state.BookId} />
+        <small id="bookIdHelp2" className="form-text text-muted">
+           {T("enterBookIdHelp")}
+        </small>
+        <BookInfo bookRec={this.state.bookRec} />
+        {this.state.bookRec !== null && 
+        <UserInfo userRec={this.state.bookRec.borrowUserRec} /> }
+       </div>
+       {userForm}
+       <button type="submit" className="btn btn-primary">{T(confirmBtn)}</button>
+      </form>
+    )
+  }
+}
+
+function UserInfo(props){
+  const userRec=props.userRec
+  if (userRec !== null)
+    return (
+       <div className="form-group">
+         <label className="h5">{T("userName")}:{userRec.name}; </label>
+         <label className="h5">{T("userGender")}:
+           {userRec.gender === "0" ? T("male"):T("female")}; 
+         </label>
+         <label className="h5">{T("borrowRestriction")}:{userRec.borrowNoAllowed}; </label>
+         <label className="h5">{T("classInfo")}:{userRec.classInfo}; </label>
+         <label className="h5">{T("role")}:{userRec.role}</label>
+       </div>
+    )
+  else
+    return (
+       <div className="form-group">
+       </div>
+    )
+}
+
+function BookInfo (props) {
+  const bookRec = props.bookRec
+  if (bookRec !== null)
+    return(
+       <div className="form-group">
+         <label className="h5">{T("bookTitle")}:{bookRec.title};</label>
+         <label className="h5">{T("bookDesc")}:{bookRec.description};</label>
+         <label className="h5">{T("bookDonor")}:{bookRec.donor};</label>
+         <label className="h5">{T("bookLocation")}:{bookRec.locationInfo};</label>
+         <label className="h5">{T("bookStatus")}:{bookRec.statusInfo};</label>
+         <label className="h5">ISBN:{bookRec.ISBN};</label>
+         <label className="h5">{T("bookAuthor")}:{bookRec.author};</label>
+         <label className="h5">{T("bookPrice")}:{bookRec.price};</label>
+         <label className="h5">{T("bookPubDate")}:{bookRec.publishDate};</label>
+         <label className="h5">{T("bookPublisher")}:{bookRec.publisher};</label>
+         <label className="h5">{T("bookBorrowStatus")}:{bookRec.borrowed?T("bookBorrowed"):T("bookAvailable")}</label>
+       </div>
+    )
+  else
+    return (
+       <div className="form-group">
+       </div>
+    )
 }
 
 export class BorrowBook extends React.Component {
   constructor(props) {
     super(props);
+    this.state={
+      userId:"",
+      userRec:null,
+      bookId:"",
+      bookRec:null,
+    }
+    this.handleUserIdChange = this.handleUserIdChange.bind(this)
+    this.handleBookIdChange = this.handleBookIdChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  handleSubmit(event){
+    event.preventDefault()
+    const user = this.state.userRec
+    const book = this.state.bookRec
+    var alert_msg=""
+    if (user === null) {
+      alert(T("enterUserId"))
+      return
+    }
+    if (user.borrowNoAllowed === 0)
+      alert_msg = T("userName")+":"+user.name+" "+T("borrowRestriction")+":0\n"
+    if (book === null) {
+      alert(T("enterBookId"))
+      return
+    }
+    if (book.borrowed)
+      alert_msg = alert_msg+T("bookTitle")+":"+book.title + " " +
+        T("bookId") + this.state.bookId + T("bookBorrowed")
+    if (alert_msg !== "") {
+      alert(alert_msg)
+      return
+    }
+    Meteor.call("borrowBook",this.state.userId,this.state.bookId,
+      (err,result)=>{
+      if (err)
+        alert(T("borrowFail"))
+      else if (result !== null)
+        alert(T(result))
+      else {
+        alert(T("borrowSuccess"))
+        this.setState({
+          userId:"",
+          userRec:null,
+          bookId:"",
+          bookRec:null,
+        })
+      }
+    })
+  }
+
+  handleUserIdChange(event) {
+    const userId = event.target.value;
+    Meteor.call("getUserRecByUserId",userId, (err, result) => {
+      if (err)
+        return
+      this.setState({userId:userId,userRec:result})
+    })
+  }
+
+  handleBookIdChange(event) {
+    const bookId = event.target.value;
+    Meteor.call("getBookRecByBookId",bookId, (err,result) => {
+      if (err)
+        return
+      this.setState({bookId:bookId,bookRec:result})
+    })
+  }
+
   render () {
     return (
-      <div>
-      <label>{msg.enterReaderNo}</label>
-      <input type='text' />
-      <p>Reader info</p>
-      <p>Reader borrow info</p>
-      <p>Book search view</p>
-      <input type='button' value={msg.restart} />
-      <input type='button' value={msg.confirmBorrow} />
-      </div>
+      <form onSubmit={this.handleSubmit}>
+       <div className="form-group">
+        <label htmlFor="enterUserId" className="h5">{T("userId")}</label>
+        <input type="text" 
+          className="form-control" id="enterUserId"
+          aria-describedby="userIdHelp" placeholder={T("enterUserId")}
+          onChange={this.handleUserIdChange}
+          value={this.state.userId} />
+        <small id="userIdHelp" className="form-text text-muted">
+           {T("enterUserIdHelp")}
+        </small>
+       </div>
+       <UserInfo userRec={this.state.userRec} />
+       <div className="form-group">
+        <label htmlFor="enterBookId1" className="h5">{T("bookId")}</label>
+        <input type="text" 
+          className="form-control" id="enterBookId1"
+          aria-describedby="bookIdHelp1" placeholder={T("enterBookId")}
+          onChange={this.handleBookIdChange}
+          value={this.state.BookId} />
+        <small id="bookIdHelp1" className="form-text text-muted">
+           {T("enterBookIdHelp")}
+        </small>
+       </div>
+       <BookInfo bookRec={this.state.bookRec} />
+       <button type="submit" className="btn btn-primary">{T("confirmBorrow")}</button>
+      </form>
     )
   }
 }
@@ -237,32 +493,78 @@ export class BorrowBook extends React.Component {
 export class ReturnBook extends React.Component {
   constructor(props) {
     super(props);
+    this.state={
+      bookId:"",
+      bookRec:null,
+    }
+    this.handleBookIdChange = this.handleBookIdChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  handleSubmit(event){
+    event.preventDefault()
+    const book = this.state.bookRec
+    var alert_msg=""
+    if ( book === null ) {
+      alert(T("bookIdInvalid"))
+      return
+    }
+    if (!book.borrowed) {
+      alert(T("bookNotBorrowed"))
+      return
+    }
+    Meteor.call("returnBook",this.state.bookId,
+      (err,result)=>{
+      if (err)
+        alert(T("returnFail"))
+      else if (result !== null)
+        alert(result)
+      else {
+        alert(T("returnSuccess"))
+        this.setState({
+          bookId:"",
+          bookRec:null,
+        })
+      }
+    })
+  }
+
+  handleBookIdChange(event) {
+    const bookId = event.target.value;
+    Meteor.call("getBookRecByBookId",bookId, (err,result) => {
+      if (err) {
+        console.log(err)
+        return
+      }
+      if (result === null) {
+        this.setState({bookId:bookId})
+        return
+      }
+      this.setState({bookId:bookId,bookRec:result})
+    })
+  }
+
   render () {
     return (
-      <div>
-      <label>{msg.enterBookNo}</label>
-      <input type='text' />
-      <p>Book info</p>
-      <p>Borrower info</p>
-      <input type='button' value={msg.restart} />
-      <input type='button' value={msg.confirmReturn} />
-      </div>
+      <form onSubmit={this.handleSubmit}>
+       <div className="form-group">
+        <label htmlFor="enterBookId2" className="h5">{T("bookId")}</label>
+        <input type="text" 
+          className="form-control" id="enterBookId2"
+          aria-describedby="bookIdHelp2" placeholder={T("enterBookId")}
+          onChange={this.handleBookIdChange}
+          value={this.state.BookId} />
+        <small id="bookIdHelp2" className="form-text text-muted">
+           {T("enterBookIdHelp")}
+        </small>
+       </div>
+       <BookInfo bookRec={this.state.bookRec} />
+       {this.state.bookRec !== null && 
+       <UserInfo userRec={this.state.bookRec.borrowUserRec} /> }
+       <button type="submit" className="btn btn-primary">{T("confirmReturn")}</button>
+      </form>
     )
   }
-}
-
-function ManagerMenu() {
-  return(
-    <ul>
-      <li>{msg.timeoutBorrow}</li>
-      <li>{msg.borrowHistory}</li>
-      <li>{msg.bookManage}</li>
-      <li>{msg.readerManage}</li>
-      <li>{msg.classManage}</li>
-      <li>{msg.roleManage}</li>
-    </ul>
-  )
 }
 
 export class Manager extends React.Component {
@@ -281,24 +583,124 @@ export class Manager extends React.Component {
 export class Other extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      curTab:"",
+      json:[]
+    }
+
+    this.handleChange = this.handleChange.bind(this);
   }
+
+  handleChange(event) {
+    const tab = event.target.value;
+    Meteor.call("getTableData",tab,(err,result)=>{
+      if (err)
+        return
+      this.setState({curTab: tab,json:result});
+    })
+  }
+
   render () {
     return (
-      <div>
-        <p>{msg.other}</p>
-      </div>
+      <form>
+        <div className="form-group">
+          <label htmlFor="select-table">Current table:</label>
+          <select id="select-table" value={this.state.curTab} onChange={this.handleChange}>
+            <option value="User" key="User">User</option>
+            <option value="Book" key="Book">Book</option>
+            <option value="BookCopy" key="BookCopy">BookCopy</option>
+            <option value="android_metadata" key="android_metadata">android_metadata</option>
+            <option value="BorrowedBy" key="BorrowedBy">BorrowedBy</option>
+            <option value="BorrowRestriction" key="BorrowRestriction">BorrowRestriction</option>
+            <option value="Class" key="Class">Class</option>
+            <option value="Library" key="Library">Library</option>
+            <option value="sqlite_sequence" key="sqlite_sequence">sqlite_sequence</option>
+            <option value="UploadHistory" key="UploadHistory">UploadHistory</option>
+          </select>
+        </div>
+        <ReactJson src = {this.state.json} 
+         collapsed = {true} collapseStringsAfterLength={40} />
+      </form>
     )
   }
 }
+
+export class DbRestore extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(event){
+    if (this.props.dbFiles === null) {
+      alert("No DB files to restore")
+      return
+    }
+    let file=[], tableName=[], reader=[];
+    for (let i=0;i<this.props.dbFiles.length;i++) {
+      file[i] = this.props.dbFiles[i]
+      tableName[i]=file[i].name.replace(".json", "")
+      reader[i] = new FileReader();
+
+      reader[i].onload = (event) => {
+        let data_str = reader[i].result;
+        console.log(data_str);
+        let data_json = EJSON.parse(data_str);
+        console.log(data_json);
+        Meteor.call("restoreTable",data_json, tableName[i], (err,result)=>{
+          if (err) {
+            alert("Restore table ",tableName[i], "error")
+            return
+          }
+        })
+      }
+      reader[i].readAsText(file[i], 'UTF-8');
+    }
+    event.preventDefault()
+  }
+
+  render () {
+    var fileList=""
+    if (this.props.dbFiles !== null)
+      //for(let i=0;i<this.props.dbFiles.length;i++) 
+      //  fileList=fileList + this.props.dbFiles[i].name + " "
+      fileList="" //this.props.dbFiles[0].name
+    return (
+      <form onSubmit={this.handleSubmit}>
+       <div className="form-group">
+        <label htmlFor="enterDbFiles">{T("dbFiles")}</label>
+        <input type="file"
+          directory="true" multiple
+          className="form-control" id="enterDbFiles"
+          aria-describedby="dbFilesHelp" 
+          onChange={this.props.handleDbFilesChange}
+          accept='.json'
+        />
+        <small id="dbFilesHelp" className="form-text text-muted">
+           {T("dbFilesHelp")}
+        </small>
+       </div>
+        <button type="submit" className="btn btn-primary">{T("dbRestore")}</button>
+      </form>
+    )
+  }
+}
+/*
+          webkitdirectory="true"
+          value={fileList}
+*/
 
 export class DcLibApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       data:"test",
-      currentPage:"login",
-      userName:"test name",
+      currentPage:"borrowBook",
+      userId:"",
+      userName:"",
       loginState:false,
+      dbFiles:null,
     }
     this.handleClickLogin = this.handleClickLogin.bind(this);
     this.handleClickSelfBorrow = this.handleClickSelfBorrow.bind(this);
@@ -307,12 +709,26 @@ export class DcLibApp extends React.Component {
     this.handleClickManager = this.handleClickManager.bind(this);
     this.handleClickOther = this.handleClickOther.bind(this);
 
-    this.handleBorrowerIdChange = this.handleBorrowerIdChange.bind(this);
+    this.handleUserIdChange = this.handleUserIdChange.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
+
+    this.handleDbRestore = this.handleDbRestore.bind(this);
+    this.handleDbFilesChange = this.handleDbFilesChange.bind(this);
   }
 
   handleClickLogin(event) {
-    this.setState({data:"Mouse Clicked Login",
-      currentPage:'login'})
+    if (this.state.loginState)
+    {
+      Meteor.call("logout",(err,result)=>{
+        if (err)
+          alert("Logout error.")
+        else if (result !== null)
+          alert(result)
+      })
+      this.setState({loginState:false})
+    }
+    else
+      this.setState({currentPage:'login'})
   }
 
   handleClickSelfBorrow(event) {
@@ -340,7 +756,7 @@ export class DcLibApp extends React.Component {
       currentPage:'other'})
   }
 
-  handleBorrowerIdChange(event) {
+  handleUserIdChange(event) {
     Meteor.call("getUserName", event.target.value, (err,result)=>{
       if (err) {
         console.log(err)
@@ -348,6 +764,21 @@ export class DcLibApp extends React.Component {
       }
       this.setState({userName:result})
     })
+    this.setState({userId:event.target.value})
+  }
+
+  handleLogin(state) {
+    this.setState({loginState:state})
+  }
+
+  handleDbRestore(event) {
+    this.setState({
+      currentPage:'dbRestore'})
+    
+  }
+
+  handleDbFilesChange(event) {
+    this.setState({dbFiles:event.target.files})
   }
 
   render() {
@@ -359,15 +790,27 @@ export class DcLibApp extends React.Component {
           handleClickReturnBook={this.handleClickReturnBook}
           handleClickManager={this.handleClickManager}
           handleClickOther={this.handleClickOther}
+          handleDbRestore={this.handleDbRestore}
+          loginState={this.state.loginState}
         />
         {this.state.currentPage === 'login' && 
-          <Login handleBorrowerIdChange={this.handleBorrowerIdChange} 
-             userName={this.state.userName} /> }
+          <Login handleUserIdChange={this.handleUserIdChange} 
+             userId={this.state.userId}
+             userName={this.state.userName}
+             handleLogin={this.handleLogin}
+             loginState={this.state.loginState}
+          /> }
         {this.state.currentPage === 'selfBorrow' && <SelfBorrow /> }
         {this.state.currentPage === 'borrowBook' && <BorrowBook /> }
         {this.state.currentPage === 'returnBook' && <ReturnBook /> }
         {this.state.currentPage === 'manager' && <Manager /> }
         {this.state.currentPage === 'other' && <Other /> }
+        {this.state.currentPage === 'dbRestore' && 
+          <DbRestore
+            handleDbFilesChange={this.handleDbFilesChange}
+            dbFiles={this.state.dbFiles}
+          />
+        }
       </div>
     );
   }
