@@ -279,10 +279,12 @@ Meteor.methods({
     const borrowRec = tab.findOne({bookCopy_id:bookCopy.id,isEnded:"0"});
     if (borrowRec === undefined)
       return(T("BookNoBorrowed"))
-    const updateCnt = tab.update({id:borrowRec.id},
-      {$set: {isEnded:"1",returnTime:getDateTime(0)}})
+    borrowRec.isEnded="1"
+    borrowRec.returnTime=getDateTime(0)
+    const updateCnt = tab.update({_id:borrowRec._id},borrowRec)
     if (updateCnt !== 1)
       return(T("ReturnRecordUpdateError"))
+    //const borrowRec1 = tab.findOne({bookCopy_id:bookCopy.id,isEnded:"0"});
     return null
   },
 
