@@ -14,7 +14,7 @@ import ReactJson from 'react-json-view'
 */
 function MainMenu(props) {
   return (
-  <nav className="navbar navbar-expand-sm navbar-light sm-light"
+  <nav className="navbar navbar-expand-md navbar-light bg-light"
     style={{"backgroundColor": "#e3f2fd"}}>
     <button className="navbar-toggler" 
       type="button" 
