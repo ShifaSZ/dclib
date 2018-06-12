@@ -23,7 +23,16 @@ Install JDK
 
 Install nodejs
 
-Instal Meteor
+Install Meteor
+
+Scripts for installing Meteor for all users in Windows:
+
+robocopy "C:\Users\%UserName%\AppData\Local\.meteor" "C:\Users\All Users\AppData\Local\.meteor" /MIR /SEC /XJD /R:5 /W:5 /MT:32 /V /NP
+
+icacls "C:\Users\All Users\AppData\Local\.meteor" /grant All:(OI)(CI)F /T /C
+
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path /t REG_EXPAND_SZ /d "%path%;C:\Users\All Users\AppData\Local\.meteor\"
+
 
 In a windows command line (cmd.exe)
 
