@@ -8,7 +8,7 @@
     "find-port": "2.0.1",
     "rimraf": "2.6.2",
     "shelljs": "0.7.5",
-    "lodash": "4.17.10",
+    "lodash": "4.17.15",
     "request": "2.79.0",
     "queue": "4.0.1",
     "reify": "0.15.1",
