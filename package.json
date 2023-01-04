@@ -14,6 +14,6 @@
     "react-json-view": "^1.16.6"
   },
   "devDependencies": {
-    "meteor-desktop": "^1.0.0"
+    "meteor-desktop": "^2.2.5"
   }
 }
